@@ -5,6 +5,10 @@ from torchvision.models import resnet18
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.datasets import load_digits
 from torch.utils.data import TensorDataset, DataLoader
+from sklearn.datasets import load_digits
+from torch.utils.data import TensorDataset, DataLoader
+import torch.nn.functional as F
+
 
 
 def main():
@@ -18,12 +22,19 @@ def main():
     ])
 
     # ----- Fake Dataset (NO DOWNLOADS) -----
-    testset = datasets.FakeData(
-        size=500,
-        image_size=(3, 224, 224),
-        num_classes=10,
-        transform=transform
-    )
+    digits = load_digits()
+
+    X = torch.tensor(digits.images, dtype=torch.float32)
+    y = torch.tensor(digits.target, dtype=torch.long)
+
+    X = X / 16.0
+    X = X.unsqueeze(1)
+    X = F.interpolate(X, size=(224, 224))
+    X = X.repeat(1, 3, 1, 1)
+
+    testset = TensorDataset(X, y)
+    testloader = DataLoader(testset, batch_size=64, shuffle=False)
+
 
     testloader = torch.utils.data.DataLoader(
         testset, batch_size=64, shuffle=False

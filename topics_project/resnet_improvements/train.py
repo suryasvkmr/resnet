@@ -1,9 +1,13 @@
-USE_FOCAL_LOSS = False  # set False for baseline
+USE_FOCAL_LOSS = True  # set False for baseline
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torchvision import datasets, transforms
 from torchvision.models import resnet18
+from sklearn.datasets import load_digits
+from torch.utils.data import TensorDataset, DataLoader
+import torch.nn.functional as F
+
 
 from losses import FocalLoss
 
@@ -19,12 +23,26 @@ def main():
     ])
 
     # ----- Fake Dataset (NO DOWNLOADS) -----
-    trainset = datasets.FakeData(
-        size=1000,
-        image_size=(3, 224, 224),
-        num_classes=10,
-        transform=transform
-    )
+    digits = load_digits()
+
+    X = torch.tensor(digits.images, dtype=torch.float32)  # (N, 8, 8)
+    y = torch.tensor(digits.target, dtype=torch.long)
+
+    # Normalize
+    X = X / 16.0
+
+    # Add channel dimension: (N, 1, 8, 8)
+    X = X.unsqueeze(1)
+
+    # Resize to ResNet input size
+    X = F.interpolate(X, size=(224, 224))
+
+    # Convert grayscale → RGB
+    X = X.repeat(1, 3, 1, 1)
+
+    trainset = TensorDataset(X, y)
+    trainloader = DataLoader(trainset, batch_size=64, shuffle=True)
+
 
     trainloader = torch.utils.data.DataLoader(
         trainset, batch_size=64, shuffle=True
