@@ -1,3 +1,4 @@
+USE_FOCAL_LOSS = False  # set False for baseline
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -35,7 +36,12 @@ def main():
     model.to(device)
 
     # ----- UPGRADE #1: Focal Loss -----
-    criterion = FocalLoss(gamma=2.0)
+    if USE_FOCAL_LOSS:
+        criterion = FocalLoss(gamma=2.0)
+        print("Using Focal Loss")
+    else:
+        criterion = nn.CrossEntropyLoss()
+        print("Using Cross-Entropy Loss")
     # baseline would be: nn.CrossEntropyLoss()
 
     optimizer = optim.Adam(model.parameters(), lr=1e-4)
@@ -57,7 +63,7 @@ def main():
         if batch_idx >= 10:
             break
 
-    print("Training loop completed with Focal Loss.")
+    print("Training loop completed with Focal Loss = ", USE_FOCAL_LOSS)
 
 
 if __name__ == "__main__":

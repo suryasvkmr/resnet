@@ -3,6 +3,8 @@ import torch.nn as nn
 from torchvision import datasets, transforms
 from torchvision.models import resnet18
 from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.datasets import load_digits
+from torch.utils.data import TensorDataset, DataLoader
 
 
 def main():
