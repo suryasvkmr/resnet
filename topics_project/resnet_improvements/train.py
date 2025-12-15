@@ -9,22 +9,19 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from losses import FocalLoss
 
-# Change these if you want slightly longer/shorter demo training
 BATCHES_TO_RUN = 30
 LR = 1e-3
 BATCH_SIZE = 64
 
 def get_digits_loader(train=True):
-    # For “upgrade + demonstrate”, we just use the same Digits data.
-    # (If you want a train/test split, we can add it, but this is enough for tonight.)
     digits = load_digits()
     X = torch.tensor(digits.images, dtype=torch.float32)  # (N,8,8)
     y = torch.tensor(digits.target, dtype=torch.long)
 
-    X = X / 16.0
-    X = X.unsqueeze(1)  # (N,1,8,8)
-    X = F.interpolate(X, size=(224, 224))  # (N,1,224,224)
-    X = X.repeat(1, 3, 1, 1)  # (N,3,224,224)
+    X = X / 16.0 #Normalize to [0,1]
+    X = X.unsqueeze(1)  # Add channel dimension to bring to size (N,1,8,8)
+    X = F.interpolate(X, size=(224, 224))  # Resizing to (N,1,224,224)
+    X = X.repeat(1, 3, 1, 1)  # Three Channel Replication to bring to size (N,3,224,224)
 
     ds = TensorDataset(X, y)
     return DataLoader(ds, batch_size=BATCH_SIZE, shuffle=train)
