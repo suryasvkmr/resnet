@@ -1,6 +1,4 @@
-
-
-The project consists of a lightweight training and evaluation pipeline built around ResNet-18. 
+The project consists of a training and evaluation pipeline improvements built around ResNet-18. 
 The original network architecture is preserved, while two key improvements are introduced:
 
 1) Replacement of the standard cross-entropy loss with focal loss.
