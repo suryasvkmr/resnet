@@ -57,8 +57,6 @@ def train_one(loss_name: str, criterion: nn.Module, device: str, save_path: str)
 def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print("Using device:", device)
-
-    # Train baseline and improved
     train_one(
         loss_name="CrossEntropy",
         criterion=nn.CrossEntropyLoss(),

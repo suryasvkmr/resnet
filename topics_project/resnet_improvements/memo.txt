@@ -1,0 +1,56 @@
+
+
+The project consists of a lightweight training and evaluation pipeline built around ResNet-18. 
+The original network architecture is preserved, while two key improvements are introduced:
+
+1) Replacement of the standard cross-entropy loss with focal loss.
+2) Expansion of evaluation metrics to include robustness-oriented measures.
+
+1. File Structure and Purpose
+--------------------------------------------------
+
+Please find our code in the following folders:
+
+resnet_improvements/
+│
+├── train.py
+├── eval.py
+├── losses.py
+├── robustness.py
+├── runs/
+├── data/
+└── memo.txt
+
+2. train.py
+-----------------------------------------------
+
+The train.py file implements the training pipeline for the ResNet-18 architecture.
+
+It does the following:
+- Loads the new Digits dataset from scikit-learn.
+- Performs preprocessing
+- Trains two separate models:
+    a) One using standard CrossEntropyLoss.
+    b) One using the custom FocalLoss implementation.
+- Saves trained model weights to the runs/ directory for later evaluation.
+
+3. losses.py
+--------------------------------------------------
+
+The losses.py file contains the implementation of the FocalLoss class.
+
+It:
+- Defines the focal loss function as described in the original focal loss paper.
+- Serves as a drop-in replacement for standard cross-entropy loss.
+
+4. eval.py
+---------------------------------
+
+The eval.py file implements the evaluation and metrics pipeline.
+
+It:
+- Loads trained model weights from the runs/ directory.
+- Evaluates both cross-entropy and focal loss models on the same dataset.
+- Computes standard classification metrics, including accuracy and macro-averaged F1 score.
+- Computes robustness-oriented metrics such as balanced accuracy, worst-class recall, and recall variance.
+- Generates confusion matrices to visualize class-wise prediction behavior.

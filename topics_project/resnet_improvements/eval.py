@@ -61,7 +61,7 @@ def eval_model(name, model, loader, device):
     print("Confusion Matrix:")
     print(cm)
 
-    # --- Robustness metrics ---
+    #robustness table - evaluate
     acc = (all_preds == all_labels).mean()
     bal_acc = balanced_accuracy_score(all_labels, all_preds)
     macro_f1 = f1_score(all_labels, all_preds, average="macro", zero_division=0)
